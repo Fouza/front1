@@ -156,11 +156,27 @@
   place-content: center;
   position: relative;
   /* overflow-y: auto; */
-  max-height: 280px;
+  max-height: 125px !important;
+  max-width: 290px;
   /* display: table; */
   padding: 0;
 }
-
+@media screen and (max-width: 280px) {
+  .confirm .modal-wrapper {
+    place-content: center;
+    position: relative;
+    /* overflow-y: auto; */
+    max-height: 130px !important;
+    /* display: table; */
+    padding: 0;
+  }
+}
 .circle-row {
   height: 500px;
+}
+
+.alert-wrapper {
+  min-width: 600px !important;
+  min-height: 100px !important;
+  font-weight: 30px !important;
 }

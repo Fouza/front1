@@ -868,7 +868,7 @@ const Accueil: React.FC<AccueilProps> = ({ name }) => {
     return foods.map((f: any) => {
       return (
         <IonCard class="aliment2">
-          <IonImg src={unknown}></IonImg>
+          {/* <IonImg src={unknown}></IonImg> */}
           <IonCardHeader>{f.name}</IonCardHeader>
           <IonCardContent>
             Calories : {f.calories} <br />
@@ -893,7 +893,12 @@ const Accueil: React.FC<AccueilProps> = ({ name }) => {
 
   return (
     <IonContent class="aliments" scrollX={true}>
-      <IonModal cssClass="confirm" isOpen={show} swipeToClose={true}>
+      <IonModal
+        cssClass="confirm"
+        isOpen={show}
+        onDidDismiss={() => setShow(false)}
+        swipeToClose={true}
+      >
         <IonCard style={{ margin: 0 }}>
           <IonCardHeader>
             <p className="modal-title">
@@ -901,31 +906,6 @@ const Accueil: React.FC<AccueilProps> = ({ name }) => {
             </p>
           </IonCardHeader>
           <IonCardContent>
-            <IonList class="modal-input">
-              <IonItem>
-                <IonInput
-                  type="number"
-                  placeholder="Entrez la durée (Minutes)"
-                  onIonChange={(e) => setDuree(parseInt(e.detail.value!, 10))}
-                ></IonInput>
-              </IonItem>
-              <IonItem>
-                <IonInput
-                  type="number"
-                  placeholder="Entrez la quantité de calories brûlés"
-                  onIonChange={(e) =>
-                    setCaloriesBurned(parseInt(e.detail.value!, 10))
-                  }
-                ></IonInput>
-              </IonItem>
-              <IonItem>
-                <IonInput
-                  type="text"
-                  placeholder="Notes ..."
-                  onIonChange={(e) => setNotes(e.detail.value!)}
-                ></IonInput>
-              </IonItem>
-            </IonList>
             <IonRow class="modal-footer">
               <IonButton
                 size="small"
@@ -946,7 +926,12 @@ const Accueil: React.FC<AccueilProps> = ({ name }) => {
           </IonCardContent>
         </IonCard>
       </IonModal>
-      <IonModal cssClass="confirm" isOpen={showFood} swipeToClose={true}>
+      <IonModal
+        cssClass="confirm"
+        isOpen={showFood}
+        onDidDismiss={() => setShowFood(false)}
+        swipeToClose={true}
+      >
         <IonCard style={{ margin: 0 }}>
           <IonCardHeader>
             <p className="modal-title">
@@ -954,15 +939,6 @@ const Accueil: React.FC<AccueilProps> = ({ name }) => {
             </p>
           </IonCardHeader>
           <IonCardContent>
-            <IonList class="modal-input">
-              <IonItem>
-                <IonInput
-                  type="text"
-                  placeholder="Notes ..."
-                  onIonChange={(e) => setNotes(e.detail.value!)}
-                ></IonInput>
-              </IonItem>
-            </IonList>
             <IonRow class="modal-footer">
               <IonButton
                 size="small"
@@ -975,7 +951,7 @@ const Accueil: React.FC<AccueilProps> = ({ name }) => {
               <IonButton
                 size="small"
                 expand="full"
-                onClick={() => setShow(false)}
+                onClick={() => setShowFood(false)}
               >
                 Fermer
               </IonButton>

@@ -50,11 +50,32 @@ const Login: React.FC = () => {
     setChange(true);
   }
 
+  async function hasProfile(id: BigInteger, token: String) {
+    let config = {
+      headers: {
+        //Accept: "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        //"Access-Control-Allow-Methods": "PUT, GET, POST, DELETE, OPTIONS",
+        /*"Access-Control-Allow-Headers":
+                "Origin, X-Requested-With, Content-Type, Accept",*/
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    };
+    await axios
+      .get(`http://127.0.0.1:888/api/service/user/hasProfile/${id}`, config)
+      .then((res) => {
+        if (res.data) {
+          localStorage.setItem("fitnessExist", "true");
+          window.location.replace("/page/Accueil");
+        } else {
+          localStorage.setItem("fitnessExist", "false");
+          window.location.replace("/page/Profile");
+        }
+      });
+  }
+
   async function connectRequest() {
-    console.log({
-      username: username,
-      password: pwd,
-    });
     await axios
       .post(
         "http://127.0.0.1:888/api/auth/signin",
@@ -76,8 +97,7 @@ const Login: React.FC = () => {
           localStorage.setItem("connected", "true");
           localStorage.setItem("username", res.data.username);
           localStorage.setItem("email", res.data.email);
-          // console.log(localStorage.getItem("connected"));
-          window.location.replace("/page/Accueil");
+          hasProfile(res.data.id, res.data.accessToken);
         }
       })
       .catch((err) => {
@@ -124,10 +144,6 @@ const Login: React.FC = () => {
   }
 
   function register() {
-    console.log(usernameReg);
-    console.log(pwdReg);
-    console.log(email);
-
     registerRequest();
   }
 

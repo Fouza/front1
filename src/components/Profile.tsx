@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   IonContent,
   IonHeader,
@@ -68,7 +68,15 @@ const Profile: React.FC<ProfileProps> = ({ name }) => {
   const [id, setId] = useState(localStorage.getItem("id"));
   const [alert, setAlert] = useState(false);
   const [message, setMessage] = useState("Mise à jour avec succès");
-
+  const [fitness, setFitness] = useState({
+    nom: "",
+    prenom: "",
+    birthdate: "",
+    sexe: "",
+    taille: 0,
+    poids: 0,
+    image: "",
+  });
   async function takePicture() {
     const image = await Camera.getPhoto({
       quality: 90,
@@ -106,7 +114,6 @@ const Profile: React.FC<ProfileProps> = ({ name }) => {
       );
     }
   };
-
   async function submitMoreInfo() {
     let config = {
       headers: {
@@ -133,11 +140,10 @@ const Profile: React.FC<ProfileProps> = ({ name }) => {
         config
       )
       .then((res) => {
-        console.log(res.data);
+        localStorage.setItem("fitnessExist", "true");
       })
       .catch((err) => console.log(err));
   }
-
   async function submitUpdate() {
     let config = {
       headers: {
@@ -170,11 +176,6 @@ const Profile: React.FC<ProfileProps> = ({ name }) => {
       })
       .catch((err) => alertError(err.response.data.message));
   }
-  function alertError(message: string) {
-    setMessage(message);
-    setAlert(true);
-  }
-
   async function submitUpdatePassword() {
     let config = {
       headers: {
@@ -200,6 +201,38 @@ const Profile: React.FC<ProfileProps> = ({ name }) => {
       })
       .catch((err) => console.log(err));
   }
+  async function getFitness() {
+    let config = {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    };
+    await axios
+      .get(
+        `http://localhost:888/api/service/user/getCurrent/${localStorage.getItem(
+          "id"
+        )}`,
+        config
+      )
+      .then((res) => {
+        let data = {
+          nom: res.data.fitness.lastname,
+          prenom: res.data.fitness.firstname,
+          birthdate: res.data.fitness.birthdate,
+          sexe: res.data.fitness.sexe,
+          taille: res.data.fitness.heightCm,
+          poids: res.data.fitness.currentWeight,
+          image: res.data.fitness.image,
+        };
+        setFitness(data);
+      })
+      .catch((err) => console.log(err));
+  }
+
+  useEffect(() => {
+    getFitness();
+  }, []);
 
   function handleSubmitMoreInfo() {
     submitMoreInfo();
@@ -210,15 +243,28 @@ const Profile: React.FC<ProfileProps> = ({ name }) => {
   function handleSubmitUpdatePassword() {
     submitUpdatePassword();
   }
-
+  function alertError(message: string) {
+    setMessage(message);
+    setAlert(true);
+  }
+  console.log(localStorage.getItem("fitnessExist"));
   // console.log(localStorage.getItem("id"));
-  //console.log(photo);
+  console.log(localStorage.getItem("fitnessExist"));
   return (
     <IonContent>
+      <IonAlert
+        isOpen={localStorage.getItem("fitnessExist") === "false"}
+        header={"Information !"}
+        mode="ios"
+        message={
+          "Ajouter plus d'information sur vous dans cette page pour pouvoir bien profiter de notre produit"
+        }
+      ></IonAlert>
       <IonAlert
         isOpen={alert}
         onDidDismiss={() => setAlert(false)}
         header={"Error"}
+        mode="ios"
         //ubHeader={"Inscription avec succès"}
         message={message}
         buttons={["OK"]}
@@ -230,7 +276,7 @@ const Profile: React.FC<ProfileProps> = ({ name }) => {
               <IonThumbnail>
                 <IonImg src={image} />
               </IonThumbnail>
-              <IonCardTitle>Oukacha Fouzi</IonCardTitle>
+              <IonCardTitle>{username}</IonCardTitle>
             </IonCardHeader>
 
             <IonCardContent>
@@ -299,30 +345,34 @@ const Profile: React.FC<ProfileProps> = ({ name }) => {
               <IonCardContent>
                 <IonList>
                   <IonItem>
+                    <IonLabel>Nom</IonLabel>
                     <IonInput
                       type="text"
-                      placeholder="Nom"
+                      placeholder={fitness.nom}
                       onIonChange={(e) => setNom(e.detail.value!)}
                     ></IonInput>
                   </IonItem>
                   <IonItem>
+                    <IonLabel>Prénom</IonLabel>
                     <IonInput
                       type="text"
-                      placeholder="Prénom"
+                      placeholder={fitness.prenom}
                       onIonChange={(e) => setPrenom(e.detail.value!)}
                     ></IonInput>
                   </IonItem>
                   <IonItem>
-                    <IonLabel>YYYY:MM:DD</IonLabel>
+                    <IonLabel>Date de naissance</IonLabel>
                     <IonDatetime
                       displayFormat="YYYY:MM:DD"
                       value={selectedDate}
+                      placeholder={fitness.birthdate}
                       onIonChange={(e) => setSelectedDate(e.detail.value!)}
                     ></IonDatetime>
                   </IonItem>
                   <IonItem>
+                    <IonLabel>Sexe</IonLabel>
                     <IonSelect
-                      placeholder="Sexe ..."
+                      placeholder={fitness.sexe}
                       onIonChange={(e) => setSexe(e.detail.value)}
                     >
                       <IonSelectOption value="Homme">Homme</IonSelectOption>
@@ -330,16 +380,18 @@ const Profile: React.FC<ProfileProps> = ({ name }) => {
                     </IonSelect>
                   </IonItem>
                   <IonItem>
+                    <IonLabel>Taille (Cm)</IonLabel>
                     <IonInput
                       type="number"
-                      placeholder="Taille (Cm)"
+                      placeholder={fitness.taille + ""}
                       onIonChange={(e) => setTaille(e.detail.value!)}
                     ></IonInput>
                   </IonItem>
                   <IonItem>
+                    <IonLabel>Poids (Kg)</IonLabel>
                     <IonInput
                       type="number"
-                      placeholder="Poids (Kg)"
+                      placeholder={fitness.poids + ""}
                       onIonChange={(e) => setPoid(e.detail.value!)}
                     ></IonInput>
                   </IonItem>

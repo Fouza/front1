@@ -27,6 +27,14 @@ import {
   trashSharp,
   warningOutline,
   warningSharp,
+  bodyOutline,
+  bodySharp,
+  newspaperOutline,
+  newspaperSharp,
+  pulseOutline,
+  pulseSharp,
+  browsersOutline,
+  browsersSharp,
 } from "ionicons/icons";
 import "./Menu.css";
 import { disconnect } from "cluster";
@@ -42,38 +50,26 @@ const appPages: AppPage[] = [
   {
     title: "Accueil",
     url: "/page/Accueil",
-    iosIcon: mailOutline,
-    mdIcon: mailSharp,
+    iosIcon: browsersOutline,
+    mdIcon: browsersSharp,
   },
   {
     title: "Données",
     url: "/page/Calendrier",
-    iosIcon: mailOutline,
-    mdIcon: mailSharp,
+    iosIcon: newspaperOutline,
+    mdIcon: newspaperSharp,
   },
   {
     title: "Statistiques",
     url: "/page/Statistics",
-    iosIcon: paperPlaneOutline,
-    mdIcon: paperPlaneSharp,
+    iosIcon: pulseOutline,
+    mdIcon: pulseSharp,
   },
   {
     title: "Profile",
     url: "/page/Profile",
-    iosIcon: heartOutline,
-    mdIcon: heartSharp,
-  },
-  {
-    title: "Archived",
-    url: "/page/Archived",
-    iosIcon: archiveOutline,
-    mdIcon: archiveSharp,
-  },
-  {
-    title: "Trash",
-    url: "/page/Trash",
-    iosIcon: trashOutline,
-    mdIcon: trashSharp,
+    iosIcon: bodyOutline,
+    mdIcon: bodySharp,
   },
   /*{
     title: "Spam",
@@ -101,7 +97,7 @@ const Menu: React.FC = () => {
       <IonContent>
         <IonList id="inbox-list">
           <IonListHeader>Okito</IonListHeader>
-          <IonNote>Nahla Villa</IonNote>
+          <IonNote>{localStorage.getItem("username")}</IonNote>
           {appPages.map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>
@@ -122,7 +118,7 @@ const Menu: React.FC = () => {
           })}
           <IonMenuToggle key={10} autoHide={false}>
             <IonButton
-              color="light"
+              color="danger"
               fill="clear"
               //expand="block"
               onClick={() => disconnect()}
